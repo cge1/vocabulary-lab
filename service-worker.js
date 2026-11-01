@@ -1,4 +1,4 @@
-const CACHE_NAME='vocabulary-lab-shell-v2';
+const CACHE_NAME='vocabulary-lab-shell-v3';
 const APP_SHELL=[
   './','./index.html','./styles.css','./icon.svg','./manifest.webmanifest',
   './core.js','./learn-test.js','./study-wrong.js','./firebase-config.js','./cloud-sync.js','./pwa.js',
@@ -15,9 +15,15 @@ self.addEventListener('fetch',event=>{
   if(req.method!=='GET')return;
   const url=new URL(req.url);
   if(url.origin!==self.location.origin)return;
-  if(req.mode==='navigate'){
-    event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put('./index.html',copy));return res}).catch(()=>caches.match('./index.html')));
-    return;
-  }
-  event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(res=>{if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy))}return res})));
+  event.respondWith(
+    fetch(req).then(res=>{
+      if(res&&res.status===200){const copy=res.clone();caches.open(CACHE_NAME).then(c=>c.put(req,copy))}
+      return res;
+    }).catch(async()=>{
+      const cached=await caches.match(req);
+      if(cached)return cached;
+      if(req.mode==='navigate')return caches.match('./index.html');
+      throw new Error('Offline and resource not cached');
+    })
+  );
 });
