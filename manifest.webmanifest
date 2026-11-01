@@ -1,0 +1,19 @@
+{
+  "name": "Vocabulary Lab",
+  "short_name": "Vocab Lab",
+  "description": "Learn English vocabulary, take synonym tests, and sync progress across devices.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#315efb",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
