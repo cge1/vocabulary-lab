@@ -2,21 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#315efb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Vocabulary Lab">
 <title>Vocabulary Lab</title>
-<meta name="description" content="A self-contained English vocabulary learning and testing website.">
+<meta name="description" content="English vocabulary learning, synonym testing, progress tracking, and cloud sync.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="shell">
 <header>
-  <div class="brand"><div class="logo">VL</div>Vocabulary Lab</div>
+  <div class="brand"><div class="logo">VL</div><div>Vocabulary Lab<div id="syncBadge" class="sync-badge local">Local mode</div></div></div>
   <nav id="nav">
     <button class="navbtn active" data-view="home">Home</button>
     <button class="navbtn" data-view="learn">Learn + Test</button>
     <button class="navbtn" data-view="random">Random Test</button>
     <button class="navbtn" data-view="study">Study</button>
     <button class="navbtn" data-view="wrong">Wrong Words</button>
+    <button class="navbtn" data-view="account">Account</button>
   </nav>
 </header>
 
@@ -25,6 +33,10 @@
   <div class="hero">
     <h1>Build vocabulary. Test recall. Track weak words.</h1>
     <p>Study your vocabulary bank with English definitions, examples and pronunciation, then test yourself with one synonym and three distractors.</p>
+  </div>
+  <div id="installBanner" class="install-banner" hidden>
+    <div><b>Install Vocabulary Lab</b><div class="small">Use it from your phone home screen like an app.</div></div>
+    <button class="primary" id="installBannerBtn">Install App</button>
   </div>
   <div class="stats" id="stats"></div>
   <div class="grid">
@@ -44,7 +56,7 @@
       <button class="primary" onclick="showView('study')">Open study mode</button>
     </div>
   </div>
-  <div class="grid" style="grid-template-columns:1.3fr .7fr;margin-top:16px">
+  <div class="grid dashboard-lower">
     <div class="card">
       <h2 style="margin-top:0">Progress Tracking</h2>
       <div id="history" class="history"></div>
@@ -59,9 +71,7 @@
 </section>
 
 <section id="learn" class="view">
-  <div class="section-head">
-    <div><h1>Learn + Test</h1><p>Study a random set, then test the same words.</p></div>
-  </div>
+  <div class="section-head"><div><h1>Learn + Test</h1><p>Study a random set, then test the same words.</p></div></div>
   <div id="learnSetup" class="card">
     <h2>Choose a study set</h2>
     <div class="choice-row">
@@ -69,16 +79,14 @@
       <button class="choice" onclick="startLearn(100)">100 words</button>
       <button class="choice" onclick="startLearn('all')">All words</button>
     </div>
-    <div class="info">Definitions, examples, pronunciation, and synonym data are loaded from free online dictionary services. An internet connection is recommended.</div>
+    <div class="info">Definitions, examples, pronunciation, and synonym data are loaded from free online dictionary services. Previously viewed entries are cached on this device.</div>
   </div>
   <div id="learnStudy" style="display:none"></div>
   <div id="learnResults" style="display:none"></div>
 </section>
 
 <section id="random" class="view">
-  <div class="section-head">
-    <div><h1>Random Test</h1><p>Test random words from the complete vocabulary bank.</p></div>
-  </div>
+  <div class="section-head"><div><h1>Random Test</h1><p>Test random words from the complete vocabulary bank.</p></div></div>
   <div id="randomSetup" class="card">
     <h2>How many questions?</h2>
     <div class="choice-row">
@@ -97,9 +105,7 @@
 </section>
 
 <section id="study" class="view">
-  <div class="section-head">
-    <div><h1>Study</h1><p>No test. Search, browse, listen, and read examples.</p></div>
-  </div>
+  <div class="section-head"><div><h1>Study</h1><p>No test. Search, browse, listen, and read examples.</p></div></div>
   <div class="searchbar">
     <input id="studySearch" list="wordList" placeholder="Search a word..." autocomplete="off">
     <datalist id="wordList"></datalist>
@@ -112,18 +118,48 @@
 <section id="wrong" class="view">
   <div class="section-head">
     <div><h1>Wrong Words</h1><p>Review words you missed in previous tests.</p></div>
-    <div class="choice-row">
-      <button class="primary" onclick="retestWrong()">Retest wrong words</button>
-      <button class="danger" onclick="clearWrongWords()">Clear list</button>
-    </div>
+    <div class="choice-row"><button class="primary" onclick="retestWrong()">Retest wrong words</button><button class="danger" onclick="clearWrongWords()">Clear list</button></div>
   </div>
   <div id="wrongContent"></div>
   <div id="wrongQuiz" style="display:none"></div>
   <div id="wrongResults" style="display:none"></div>
 </section>
+
+<section id="account" class="view">
+  <div class="section-head"><div><h1>Account & Sync</h1><p>Use one account to keep progress, wrong words, and test history in sync across devices.</p></div></div>
+  <div class="account-grid">
+    <div class="card">
+      <h2>Cloud Account</h2>
+      <div id="firebaseSetupNotice" class="notice" hidden>Cloud sync is not configured yet. Local learning still works normally.</div>
+      <div id="signedOutPanel">
+        <label class="field"><span>Email</span><input id="authEmail" type="email" autocomplete="email" placeholder="name@example.com"></label>
+        <label class="field"><span>Password</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="At least 6 characters"></label>
+        <div class="choice-row"><button class="primary" id="signInBtn">Sign In</button><button class="secondary" id="signUpBtn">Create Account</button></div>
+        <button class="text-btn" id="resetPasswordBtn">Forgot password?</button>
+      </div>
+      <div id="signedInPanel" hidden>
+        <div class="account-user"><div class="avatar">✓</div><div><b id="accountEmail">Signed in</b><div id="lastSyncText" class="small">Cloud sync ready.</div></div></div>
+        <div class="choice-row" style="margin-top:16px"><button class="primary" id="syncNowBtn">Sync Now</button><button class="secondary" id="signOutBtn">Sign Out</button></div>
+      </div>
+      <div id="authMessage" class="small auth-message"></div>
+    </div>
+    <div class="card">
+      <h2>Install on Phone</h2>
+      <p>Install Vocabulary Lab to your home screen for an app-like full-screen experience. The installed app and the website use the same cloud account.</p>
+      <button class="primary" id="installAppBtn">Install App</button>
+      <div id="iosInstallHelp" class="info" hidden>On iPhone/iPad in Safari: tap <b>Share</b> → <b>Add to Home Screen</b> → <b>Add</b>.</div>
+      <div id="installedText" class="info" hidden>Vocabulary Lab is already running as an installed app.</div>
+    </div>
+    <div class="card">
+      <h2>How Sync Works</h2>
+      <p class="small">When signed in, local progress is merged with your cloud record. The app then saves changes automatically after you study or finish a test. If you stay signed out, all data remains only on this device.</p>
+      <div class="sync-list"><div>✓ Studied words</div><div>✓ Wrong words</div><div>✓ Test history</div><div>✓ Overall accuracy</div></div>
+    </div>
+  </div>
+</section>
 </main>
 
-<div class="footer">Vocabulary Lab · Local progress is stored in this browser · Dictionary enrichment: Free Dictionary API · Synonym service: Datamuse · Speech fallback: Web Speech API</div>
+<div class="footer">Vocabulary Lab · PWA-ready · Local mode works without an account · Cloud sync uses Firebase when configured</div>
 </div>
 
 <script src="words-1.js"></script>
@@ -134,5 +170,8 @@
 <script src="core.js"></script>
 <script src="learn-test.js"></script>
 <script src="study-wrong.js"></script>
+<script src="firebase-config.js"></script>
+<script type="module" src="cloud-sync.js"></script>
+<script src="pwa.js"></script>
 </body>
 </html>
