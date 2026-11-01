@@ -1,0 +1,8 @@
+Phase 2 code is installed.
+
+PWA: enabled
+Cloud account UI: enabled
+Firebase Auth/Firestore code: enabled
+Firebase project config: pending user Firebase Console configuration
+
+After Firebase config is added, cloud sync activates automatically.
