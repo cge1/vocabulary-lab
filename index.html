@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Lab</title>
+<meta name="description" content="A self-contained English vocabulary learning and testing website.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="logo">VL</div>Vocabulary Lab</div>
+  <nav id="nav">
+    <button class="navbtn active" data-view="home">Home</button>
+    <button class="navbtn" data-view="learn">Learn + Test</button>
+    <button class="navbtn" data-view="random">Random Test</button>
+    <button class="navbtn" data-view="study">Study</button>
+    <button class="navbtn" data-view="wrong">Wrong Words</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="view active">
+  <div class="hero">
+    <h1>Build vocabulary. Test recall. Track weak words.</h1>
+    <p>Study your vocabulary bank with English definitions, examples and pronunciation, then test yourself with one synonym and three distractors.</p>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="grid">
+    <div class="card action-card">
+      <div class="icon">📘</div><h2>Learn + Test</h2>
+      <p>Learn a random set of 50, 100, or all words. When you finish studying, test only the words from that study session.</p>
+      <button class="primary" onclick="showView('learn')">Start learning</button>
+    </div>
+    <div class="card action-card">
+      <div class="icon">🎯</div><h2>Random Test</h2>
+      <p>Choose how many questions you want and test yourself on randomly selected words from the full vocabulary bank.</p>
+      <button class="primary" onclick="showView('random')">Take a random test</button>
+    </div>
+    <div class="card action-card">
+      <div class="icon">🔊</div><h2>Study</h2>
+      <p>Study without a test. Search or browse words, hear pronunciation, read the meaning, see part of speech, and review an example sentence.</p>
+      <button class="primary" onclick="showView('study')">Open study mode</button>
+    </div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.3fr .7fr;margin-top:16px">
+    <div class="card">
+      <h2 style="margin-top:0">Progress Tracking</h2>
+      <div id="history" class="history"></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-top:0">Wrong Words</h2>
+      <p class="small">Words you missed are saved automatically for focused review.</p>
+      <div id="wrongPreview"></div>
+      <button class="secondary" onclick="showView('wrong')" style="margin-top:10px">Open Wrong Words</button>
+    </div>
+  </div>
+</section>
+
+<section id="learn" class="view">
+  <div class="section-head">
+    <div><h1>Learn + Test</h1><p>Study a random set, then test the same words.</p></div>
+  </div>
+  <div id="learnSetup" class="card">
+    <h2>Choose a study set</h2>
+    <div class="choice-row">
+      <button class="choice" onclick="startLearn(50)">50 words</button>
+      <button class="choice" onclick="startLearn(100)">100 words</button>
+      <button class="choice" onclick="startLearn('all')">All words</button>
+    </div>
+    <div class="info">Live dictionary enrichment needs an internet connection. Your original definitions are built into this file and always remain available.</div>
+  </div>
+  <div id="learnStudy" style="display:none"></div>
+  <div id="learnResults" style="display:none"></div>
+</section>
+
+<section id="random" class="view">
+  <div class="section-head">
+    <div><h1>Random Test</h1><p>Test random words from the complete vocabulary bank.</p></div>
+  </div>
+  <div id="randomSetup" class="card">
+    <h2>How many questions?</h2>
+    <div class="choice-row">
+      <button class="choice" onclick="startRandomTest(10)">10</button>
+      <button class="choice" onclick="startRandomTest(25)">25</button>
+      <button class="choice" onclick="startRandomTest(50)">50</button>
+      <button class="choice" onclick="startRandomTest(100)">100</button>
+      <button class="choice" onclick="startRandomTest(200)">200</button>
+      <input id="customCount" type="number" min="1" style="width:110px;padding:12px;border:1px solid var(--line);border-radius:10px" placeholder="Custom">
+      <button class="primary" onclick="startCustomTest()">Start</button>
+    </div>
+    <div class="small" style="margin-top:12px">Each question contains one synonym (or closest equivalent if a strict synonym is unavailable) and three unrelated distractors.</div>
+  </div>
+  <div id="randomQuiz" style="display:none"></div>
+  <div id="randomResults" style="display:none"></div>
+</section>
+
+<section id="study" class="view">
+  <div class="section-head">
+    <div><h1>Study</h1><p>No test. Search, browse, listen, and read examples.</p></div>
+  </div>
+  <div class="searchbar">
+    <input id="studySearch" list="wordList" placeholder="Search a word..." autocomplete="off">
+    <datalist id="wordList"></datalist>
+    <button class="primary" onclick="searchStudyWord()">Search</button>
+    <button class="secondary" onclick="randomStudyWord()">Random</button>
+  </div>
+  <div id="studyCard"></div>
+</section>
+
+<section id="wrong" class="view">
+  <div class="section-head">
+    <div><h1>Wrong Words</h1><p>Review words you missed in previous tests.</p></div>
+    <div class="choice-row">
+      <button class="primary" onclick="retestWrong()">Retest wrong words</button>
+      <button class="danger" onclick="clearWrongWords()">Clear list</button>
+    </div>
+  </div>
+  <div id="wrongContent"></div>
+  <div id="wrongQuiz" style="display:none"></div>
+  <div id="wrongResults" style="display:none"></div>
+</section>
+</main>
+
+<div class="footer">Vocabulary Lab · Local progress is stored in this browser · Dictionary enrichment: Free Dictionary API · Synonym service: Datamuse · Speech fallback: Web Speech API</div>
+</div>
+
+<script src="words-1.js"></script>
+<script src="words-2.js"></script>
+<script src="words-3.js"></script>
+<script src="words-4.js"></script>
+<script src="words-5.js"></script>
+<script src="words-6.js"></script>
+<script src="words-7.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
