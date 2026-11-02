@@ -32,25 +32,26 @@ function showInstallGuide(){
   if(isIOS()){
     title.textContent='Install on iPhone / iPad';
     body.innerHTML=`
-      <p><b>iPhone does not allow a website button to open the install prompt directly.</b></p>
+      <p><b>Use Safari for installation.</b> iPhone does not allow a website button to open the install prompt directly.</p>
       <ol style="padding-left:22px">
-        <li>Open this Vocabulary Lab page in <b>Safari</b> (or use your browser's Share menu on newer iOS versions).</li>
-        <li>Tap the <b>Share</b> button.</li>
-        <li>Scroll down and choose <b>Add to Home Screen</b>.</li>
-        <li>Turn on <b>Open as Web App</b> if that option appears.</li>
+        <li>Open <b>https://cge1.github.io/vocabulary-lab/</b> in <b>Safari</b>.</li>
+        <li>Tap the <b>Page Menu</b> button, then <b>Share</b> (or tap the Share button directly, depending on your Safari layout).</li>
+        <li>Scroll down the Share actions and tap <b>Add to Home Screen</b>.</li>
+        <li><b>If Add to Home Screen is missing:</b> scroll all the way to the bottom, tap <b>Edit Actions</b>, then add <b>Add to Home Screen</b>.</li>
+        <li>Turn on <b>Open as Web App</b>.</li>
         <li>Tap <b>Add</b>.</li>
       </ol>
-      <p style="margin-bottom:0"><b>If you opened the site inside another app</b> (for example an in-app browser), first choose <b>Open in Safari</b>, then follow the steps above.</p>`;
+      <p style="margin-bottom:0"><b>If you opened the site inside ChatGPT, Gmail, Facebook, or another in-app browser:</b> choose <b>Open in Safari</b> first. The Add to Home Screen action may not appear inside an in-app browser.</p>`;
   }else if(isAndroid()){
     title.textContent='Install on Android';
     body.innerHTML=`
       <ol style="padding-left:22px">
-        <li>Open this page in <b>Chrome</b> for the best install experience.</li>
+        <li>Open this page in <b>Chrome</b>.</li>
         <li>Tap Chrome's <b>⋮</b> menu.</li>
         <li>Choose <b>Install app</b> or <b>Add to Home screen</b>.</li>
         <li>Confirm the installation.</li>
       </ol>
-      <p style="margin-bottom:0">If the install option is not shown yet, keep this page open briefly, refresh once, and check the Chrome menu again.</p>`;
+      <p style="margin-bottom:0">If the install option is not shown yet, refresh once and check the Chrome menu again.</p>`;
   }else{
     title.textContent='Install Vocabulary Lab';
     body.innerHTML=`<p>Your browser did not provide a direct install prompt. In Chrome or Edge, open the browser menu and choose <b>Install Vocabulary Lab</b> / <b>Install app</b>. You can continue using the website normally even without installing it.</p>`;
@@ -61,6 +62,7 @@ function showInstallGuide(){
 function updateInstallUI(){
   const installed=isStandalone();
   const banner=document.getElementById('installBanner');
+  const bannerBtn=document.getElementById('installBannerBtn');
   const mainBtn=document.getElementById('installAppBtn');
   const iosHelp=document.getElementById('iosInstallHelp');
   const installedText=document.getElementById('installedText');
@@ -76,10 +78,25 @@ function updateInstallUI(){
     mainBtn.hidden=false;
     mainBtn.disabled=false;
     mainBtn.title=deferredInstallPrompt?'Install Vocabulary Lab':'Show installation instructions';
-    mainBtn.textContent=isIOS()?'Add to Home Screen':'Install App';
+    mainBtn.textContent=isIOS()?'Install on iPhone':'Install App';
   }
-  if(iosHelp)iosHelp.hidden=!isIOS();
-  if(banner)banner.hidden=!deferredInstallPrompt;
+  if(iosHelp){
+    iosHelp.hidden=!isIOS();
+    if(isIOS())iosHelp.innerHTML='On iPhone in Safari: <b>Share → Add to Home Screen</b>. If it is missing, scroll to the bottom of the Share menu → <b>Edit Actions</b> → add <b>Add to Home Screen</b>.';
+  }
+  if(banner){
+    if(isIOS()){
+      banner.hidden=false;
+      const text=banner.querySelector('div');
+      if(text)text.innerHTML='<b>Install Vocabulary Lab on iPhone</b><div class="small">Safari → Share → Add to Home Screen. If missing: Edit Actions.</div>';
+      if(bannerBtn){bannerBtn.textContent='Show iPhone Steps';bannerBtn.disabled=false;}
+    }else if(deferredInstallPrompt){
+      banner.hidden=false;
+      if(bannerBtn){bannerBtn.textContent='Install App';bannerBtn.disabled=false;}
+    }else{
+      banner.hidden=true;
+    }
+  }
 }
 
 async function installApp(){
