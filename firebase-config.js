@@ -1,14 +1,11 @@
 // Firebase web configuration for Vocabulary Lab.
-// This file is safe to keep in a public repository: Firebase web config identifies
-// the project but does not grant database access. Firestore Security Rules enforce access.
-//
-// Replace the empty values below with the Web App config from Firebase Console:
-// Project settings -> General -> Your apps -> Web app -> SDK setup and configuration.
+// This client configuration is safe to include in a public web app; access is controlled by Firebase Authentication and Firestore Security Rules.
 window.VOCAB_FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyCXiftNqrtGYQ6BSJlKNj-o9H94MbuCKYw",
+  authDomain: "isee-word-tests.firebaseapp.com",
+  projectId: "isee-word-tests",
+  storageBucket: "isee-word-tests.firebasestorage.app",
+  messagingSenderId: "198861765431",
+  appId: "1:198861765431:web:a135ace5de701f4ad2f8b2",
+  measurementId: "G-GX25W0GCJS"
 };
