@@ -1,4 +1,4 @@
-const CACHE_NAME='vocabulary-lab-shell-v3';
+const CACHE_NAME='vocabulary-lab-shell-v4';
 const APP_SHELL=[
   './','./index.html','./styles.css','./icon.svg','./manifest.webmanifest',
   './core.js','./learn-test.js','./study-wrong.js','./firebase-config.js','./cloud-sync.js','./pwa.js',
