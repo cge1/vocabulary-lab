@@ -42,12 +42,12 @@
   <div class="grid">
     <div class="card action-card">
       <div class="icon">📘</div><h2>Learn + Test</h2>
-      <p>Learn a random set of 50, 100, or all words. When you finish studying, test only the words from that study session.</p>
+      <p>Choose an alphabetical range, learn 50, 100, or all words in that range, then test only the words from that study session.</p>
       <button class="primary" onclick="showView('learn')">Start learning</button>
     </div>
     <div class="card action-card">
       <div class="icon">🎯</div><h2>Random Test</h2>
-      <p>Choose how many questions you want and test yourself on randomly selected words from the full vocabulary bank.</p>
+      <p>Choose an alphabetical range and how many questions you want, then test randomly selected words from that range.</p>
       <button class="primary" onclick="showView('random')">Take a random test</button>
     </div>
     <div class="card action-card">
@@ -71,13 +71,22 @@
 </section>
 
 <section id="learn" class="view">
-  <div class="section-head"><div><h1>Learn + Test</h1><p>Study a random set, then test the same words.</p></div></div>
+  <div class="section-head"><div><h1>Learn + Test</h1><p>Choose a range, study a random set, then test the same words.</p></div></div>
   <div id="learnSetup" class="card">
-    <h2>Choose a study set</h2>
+    <h2>Choose a vocabulary range</h2>
+    <div class="range-panel">
+      <label class="field"><span>From</span><input id="learnRangeFrom" type="text" placeholder="A" value="" oninput="updateRangePreview('learn')"></label>
+      <div class="range-arrow">→</div>
+      <label class="field"><span>To</span><input id="learnRangeTo" type="text" placeholder="AP" value="" oninput="updateRangePreview('learn')"></label>
+      <button class="secondary range-all-btn" onclick="clearRange('learn')">All A–Z</button>
+    </div>
+    <div id="learnRangePreview" class="range-preview">Full vocabulary bank selected.</div>
+    <div class="small range-help">Examples: <b>A → AP</b>, <b>BA → BE</b>, or <b>Abandon → Acumen</b>. The ending prefix is included.</div>
+    <h2 style="margin-top:22px">Choose a study set</h2>
     <div class="choice-row">
       <button class="choice" onclick="startLearn(50)">50 words</button>
       <button class="choice" onclick="startLearn(100)">100 words</button>
-      <button class="choice" onclick="startLearn('all')">All words</button>
+      <button class="choice" onclick="startLearn('all')">All words in range</button>
     </div>
     <div class="info">Definitions, examples, pronunciation, and synonym data are loaded from free online dictionary services. Previously viewed entries are cached on this device.</div>
   </div>
@@ -86,9 +95,18 @@
 </section>
 
 <section id="random" class="view">
-  <div class="section-head"><div><h1>Random Test</h1><p>Test random words from the complete vocabulary bank.</p></div></div>
+  <div class="section-head"><div><h1>Random Test</h1><p>Choose a range and test random words from that part of the vocabulary bank.</p></div></div>
   <div id="randomSetup" class="card">
-    <h2>How many questions?</h2>
+    <h2>Choose a vocabulary range</h2>
+    <div class="range-panel">
+      <label class="field"><span>From</span><input id="randomRangeFrom" type="text" placeholder="A" value="" oninput="updateRangePreview('random')"></label>
+      <div class="range-arrow">→</div>
+      <label class="field"><span>To</span><input id="randomRangeTo" type="text" placeholder="AP" value="" oninput="updateRangePreview('random')"></label>
+      <button class="secondary range-all-btn" onclick="clearRange('random')">All A–Z</button>
+    </div>
+    <div id="randomRangePreview" class="range-preview">Full vocabulary bank selected.</div>
+    <div class="small range-help">For example, <b>A → AP</b> tests only words alphabetically from A through all AP... words.</div>
+    <h2 style="margin-top:22px">How many questions?</h2>
     <div class="choice-row">
       <button class="choice" onclick="startRandomTest(10)">10</button>
       <button class="choice" onclick="startRandomTest(25)">25</button>
